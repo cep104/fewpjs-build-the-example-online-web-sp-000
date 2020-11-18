@@ -1,37 +1,41 @@
+// Defining text characters for the empty and full hearts for you to use later.
 const EMPTY_HEART = '♡'
 const FULL_HEART = '♥'
 
 // Your JavaScript code goes here!
+let error = document.getElementById('modal')
 
-let modal = document.getElementById('modal')
 
-// modal.style.visibility = "hidden"
-modal.className = "hidden"
+function hideError() {
+  error.setAttribute('class', 'hidden');
+}
+hideError();
 
-let hearts = document.querySelectorAll('.like')
 
-function someFunction(e) {
-  let heart = e.target;
-  mimicServerCall()
-  .then(resp => {
-    heart.innerText = FULL_HEART
-    heart.className = "activated-heart"
-  })
-  .catch(error => {
-    console.log(error)
-    modal.className = ""
-    modal.innerHTML = error
-    setTimeout(function() {
-      modal.className = 'hidden'
-    },
-    5000)
+let hearts = document.getElementsByClassName('like-glyph')
+
+
+for (const heart of hearts) {
+  heart.addEventListener('click', function(e) {
+    mimicServerCall('fakeURL')
+    .then(function(response) {
+      if (heart.className === 'like-glyph activated-heart') {
+        heart.setAttribute('class', 'like-glyph');
+        heart.textContent = EMPTY_HEART;
+      } else { 
+        heart.setAttribute('class', 'like-glyph activated-heart')
+        heart.textContent = FULL_HEART;
+      }
+    })
+    .catch(function(errorMessage) {
+      error.removeAttribute('class', 'hidden');
+      let p = document.createElement('p');
+      p.textContent = errorMessage;
+      error.appendChild(p);
+      setTimeout(hideError(), 5000)
+    })
   })
 }
-
-for (heart of hearts) {
-  heart.addEventListener('click', someFunction);
-}
-
 //------------------------------------------------------------------------------
 // Ignore after this point. Used only for demo purposes
 //------------------------------------------------------------------------------
